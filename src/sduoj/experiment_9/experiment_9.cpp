@@ -6,14 +6,28 @@ using namespace std;
 struct treeNode
 {
     int data;
+    treeNode *parent;
     treeNode *left;
     treeNode *right;
 
     treeNode(int d)
     {
         this->data  = d;
-        this->left  = nullptr;
-        this->right = nullptr;
+        this->parent = nullptr;
+        this->left   = nullptr;
+        this->right  = nullptr;
+    }
+};
+
+struct chainNode
+{
+    treeNode *element;
+    chainNode *next;
+
+    chainNode()
+    {
+        this->element = nullptr;
+        this->next    = nullptr;
     }
 };
 
@@ -58,6 +72,67 @@ void heap<T>::push(T *treeNode)
     }
 }
 
+class queue
+{
+public:
+    queue();
+    ~queue();
+
+    void push(treeNode *treeNode);
+    treeNode* pop();
+
+    int len() { return this->length; }
+
+protected:
+    chainNode *front;
+    chainNode *rear;
+    int length;
+};
+
+queue::queue()
+{
+    front = new chainNode();
+    rear  = front;
+    length = 0;
+}
+
+queue::~queue()
+{
+    chainNode *nextNode;
+    while (front != nullptr)
+    {
+        nextNode = front->next;
+        delete front;
+        front = nextNode;
+    }
+}
+
+void queue::push(treeNode *treeNode)
+{
+    rear->next = new chainNode();
+    rear->next->element = treeNode;
+    rear = rear->next;
+    length++;
+}
+
+treeNode* queue::pop()
+{
+    if (length == 0)
+    {
+        return nullptr;
+    }
+    chainNode *firstNode = front->next;
+    treeNode *result = firstNode->element;
+    front->next = firstNode->next;
+    if (rear == firstNode)
+    {
+        rear = front;
+    }
+    delete firstNode;
+    length--;
+    return result;
+}
+
 template <typename T>
 T heap<T>::pop()
 {
@@ -98,16 +173,15 @@ public:
     ~binaryTree();
 
     void lineInsert(T l, T r);
-    void remove(T data);
 
-    void preOrder();
-    void inOrder();
-    void postOrder();
-    void levelOrder();
+    void preOrder(treeNode *r);
+    void inOrder(treeNode *r = nullptr);
+    void postOrder(treeNode *r = nullptr);
+    void levelOrder(treeNode *r = nullptr);
 
 protected:
-    treeNode *root;
-    typename heap<treeNode> treeHeap();
+    static treeNode *root;
+    heap<treeNode> treeHeap;
 };
 
 template <typename T>
@@ -118,28 +192,123 @@ binaryTree<T>::binaryTree()
 }
 
 template <typename T>
-binaryTree<T>::lineInsert(T l, T r)
+void binaryTree<T>::lineInsert(T l, T r)
 {
     treeNode* target = treeHeap.pop();
+    treeNode *left_ = nullptr;
+    treeNode *right_ = nullptr;
 
     if (l != -1)
     {
-        treeNode *left_ = new treeNode(l);
+        left_ = new treeNode(l);
         treeHeap.push(left_);
     }
-    else
-        treeNode *left_ = nullptr;
     if (r != -1)
     {
-        treeNode *right_ = new treeNode(r);
+        right_ = new treeNode(r);
         treeHeap.push(right_);
     }
-    else
-        treeNode *right_ = nullptr;
 
     target->left  = left_;
     target->right = right_;
 }
+
+template <typename T>
+void binaryTree<T>::preOrder(treeNode* r)
+{
+    cout << r->data << ' ';
+    if (r->left != nullptr)
+        preOrder(r->left);
+    if (r->right != nullptr)
+        preOrder(r->right);
+}
+
+template <typename T>
+void binaryTree<T>::inOrder(treeNode *r)
+{
+    if (r == nullptr)
+        r = root;
+
+    int i = 0;
+    vector<treeNode*> stack;
+    treeNode *currentNode = r;
+    while (currentNode)
+    {
+        if (r->left != nullptr && (i == 0 || stack[i] != currentNode))
+        {
+            stack[i++] = currentNode;
+            currentNode = r->left;
+            continue;
+        }
+        cout << currentNode->data << ' ';
+        if (r->right != nullptr)
+        {
+            currentNode = r->right;
+            continue;
+        }
+        if (i != 0)
+            currentNode = stack[--i];
+        else
+            break;
+    }
+}
+
+template <typename T>
+void binaryTree<T>::postOrder(treeNode *r)
+{
+    if (r == nullptr)
+        r = root;
+
+    int i = 0;
+    vector<treeNode*> left_stack;
+    vector<treeNode*> right_stack;
+    treeNode *currentNode = r;
+    while (currentNode)
+    {
+        if (r->left != nullptr && (i == 0 || left_stack[i] != currentNode))
+        {
+            left_stack[i] = currentNode;
+            right_stack[i++] = nullptr;
+            currentNode = r->left;
+            continue;
+        }
+        if (r->right != nullptr && (i == 0 || right_stack[i] != currentNode))
+        {
+            if (left_stack[i] != currentNode)
+                left_stack[i] = nullptr;
+            right_stack[i++] = currentNode;
+            currentNode = r->right;
+            continue;
+        }
+        cout << currentNode->data << ' ';
+        if (i != 0)
+            currentNode = left_stack[--i] == nullptr ? right_stack[i] : left_stack[i];
+        else
+            break;
+    }
+}
+
+template <typename T>
+void binaryTree<T>::levelOrder(treeNode *r)
+{
+    if (r == nullptr)
+        r = root;
+
+    queue q;
+    q.push(r);
+
+    treeNode *currentNode;
+    while (q.len() != 0)
+    {
+        currentNode = q.pop();
+        cout << currentNode->data << ' ';
+        if (currentNode->left != nullptr)
+            q.push(currentNode->left);
+        if (currentNode->right != nullptr)
+            q.push(currentNode->right);
+    }
+}
+
 
 int main()
 {
