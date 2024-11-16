@@ -1,2 +1,4 @@
 .vscode/
 *.exe
+correct_answers.txt
+wrong_answers.txt
