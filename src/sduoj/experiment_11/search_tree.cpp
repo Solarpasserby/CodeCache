@@ -31,8 +31,6 @@ public:
 
     void eraseNode(TreeNode *finalNode, TreeNode *parentNode);
 
-    TreeNode* getByRank(int rank);
-
 protected:
     TreeNode *root;
     int       size;
@@ -158,40 +156,61 @@ int SearchTree::erase(int v)
 
 int SearchTree::rankSearch(int rank)
 {
-    TreeNode *temp = getByRank(rank);
-    if (temp == nullptr) return 0;
-    else return search(temp->val);
-}
-
-int SearchTree::rankErase(int rank)
-{
-    TreeNode *temp = getByRank(rank);
-    if (temp == nullptr) return 0;
-    else return erase(temp->val);
-}
-
-TreeNode* SearchTree::getByRank(int rank)
-{
-    if (root == nullptr || rank <= 0) return nullptr;
+    if (root == nullptr || rank <= 0 || rank > size) return 0;
 
     TreeNode *finalNode = root;
-    for (int i = 0; i < size; i++)
+    int res = 0;
+    while (rank > 0)
     {
+        res ^= finalNode->val;
         if (finalNode->left != nullptr && finalNode->left->size >= rank) finalNode = finalNode->left;
         else if (finalNode->left != nullptr && finalNode->left->size < rank) {
             rank -= finalNode->left->size;
-            if (rank == 1) return finalNode;
+            if (rank == 1) return res;
             rank--;
             finalNode = finalNode->right;
         }
         else {
-            if (rank == 1) return finalNode;
+            if (rank == 1) return res;
             rank--;
             finalNode = finalNode->right;
         }
     }
 
-    return nullptr;
+    return 0;
+}
+
+int SearchTree::rankErase(int rank)
+{
+    if (root == nullptr || rank <= 0 || rank > size) return 0;
+
+    TreeNode *finalNode = root, *parentNode = nullptr;
+    int res = 0;
+    while (rank > 0)
+    {
+        res ^= finalNode->val;
+        finalNode->size--;
+        if (finalNode->left != nullptr && finalNode->left->size >= rank) {
+            parentNode = finalNode;
+            finalNode = finalNode->left;
+        }
+        else if (finalNode->left != nullptr && finalNode->left->size < rank) {
+            rank -= finalNode->left->size;
+            if (rank == 1) break;
+            rank--;
+            parentNode = finalNode;
+            finalNode = finalNode->right;
+        }
+        else {
+            if (rank == 1) break;
+            rank--;
+            parentNode = finalNode;
+            finalNode = finalNode->right;
+        }
+    }
+
+    eraseNode(finalNode, parentNode);
+    return res;
 }
 
 void SearchTree::eraseNode(TreeNode *finalNode, TreeNode *parentNode)
