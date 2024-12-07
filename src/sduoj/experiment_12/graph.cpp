@@ -141,6 +141,7 @@ node* mergeSort(node* head) {
 
 // resort 函数
 void headNode::resort() {
+    if (!this) return;
     if (!next) return;
 
     // 进行归并排序
@@ -168,8 +169,8 @@ public:
     void minDFS(int n, int depth);
     void minBFS(int n);
 
-    int get_s_length() { return length[0]; }
-    int get_t_length() { return length[1]; }
+    int get_s_length() { return length[1]; }
+    int get_t_length() { return length[0]; }
     int get_min_depth() { return minDepth; }
 
 protected:
@@ -267,12 +268,14 @@ void graph::initSearch()
     vector<int> Path;
     queue<int>  toReach;
     int label = 0;
-    node *start = nodes[nt]->next;
+    node *start;
     int   min   = nt;
     int   len   = 1;
 
 
     /* bfs */
+    if (nodes[nt] == nullptr) start = nullptr;
+    else start = nodes[nt]->next;
     reach[nt] = ++label;
     Path.push_back(nt);
     while (start != nullptr || !toReach.empty()) {
@@ -305,7 +308,8 @@ void graph::initSearch()
     Path.clear();
 
     if (!isPathExist) {
-        start = nodes[ns]->next;
+        if (nodes[ns] == nullptr) start = nullptr;
+        else start = nodes[ns]->next;
         min   = ns;
         len   = 1;
 
@@ -343,7 +347,8 @@ void graph::initSearch()
     /* 遍历剩余连通分量 */
     for (int i = 1; i <= volume; i++) {
         if (reach[i] == 0) {
-            start = nodes[i]->next;
+            if (nodes[i] == nullptr) start = nullptr;
+            else start = nodes[i]->next;
             min   = i;
             reach[i] = ++label;
 
@@ -379,8 +384,10 @@ void graph::initSearch()
 
 void graph::minDFS(int n, int depth)
 {
-    node *start = nodes[n]->next;
+    node *start;
     int   dp    = depth + 1;
+    if (nodes[n] == nullptr) start = nullptr;
+    else start = nodes[n]->next;
     reach[n] = -1;
 
     cout << n << " ";
@@ -390,7 +397,7 @@ void graph::minDFS(int n, int depth)
             minDFS(start->element, dp);
         }
         if (isPathExist && start->element == nt) {
-            if (minDepth = -1) minDepth = dp;
+            if (minDepth == -1) minDepth = dp;
             else if (dp < minDepth) minDepth = dp;
         } 
         start = start->next;
@@ -402,8 +409,10 @@ void graph::minDFS(int n, int depth)
 void graph::minBFS(int n)
 {
     queue<int> toReach;
-    node *start = nodes[n]->next;
+    node *start;
     reach[n] = -2;
+    if (nodes[n] == nullptr) start = nullptr;
+    else start = nodes[n]->next;
     cout << n << " ";
 
     /* bfs */
