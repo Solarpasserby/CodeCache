@@ -4,22 +4,22 @@ using namespace std;
 template <typename T>
 class hashingNode
 {
-    public:
-        hashingNode(T theElement, hashingNode *theNext = nullptr) : element(theElement), next(theNext) {}
-        ~hashingNode() {}
+public:
+    hashingNode(T theElement, hashingNode *theNext = nullptr) : element(theElement), next(theNext) {}
+    ~hashingNode() {}
 
-        T element;
-        hashingNode<T> *next;
+    T element;
+    hashingNode<T> *next;
 };
 
 template <typename T>
 class hashingHeadNode : public hashingNode<T>
 {
-    public:
-        hashingHeadNode() : hashingNode<T>(0, nullptr), length(0) {}
-        ~hashingHeadNode() {}
+public:
+    hashingHeadNode() : hashingNode<T>(0, nullptr), length(0) {}
+    ~hashingHeadNode() {}
 
-        int length;
+    int length;
 };
 
 template <typename T>
