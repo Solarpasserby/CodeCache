@@ -1,30 +1,25 @@
-// #include<cstdio>
-
-// int main()
-// {
-//     bool ch = true;
-//     char c;
-//     int l = 0;
-
-//     while((c = getchar()) != '\n')
-//     {
-//         ++l;
-//         if (l % 2 == 1 && c >= 'a' && c <= 'z') continue;
-//         else if (l % 2 == 0 && c >= 'A' && c <= 'Z') continue;
-//         else ch = false;
-//     }
-
-//     if (ch) printf("%s", "Yes\n");
-//     else printf("%s", "No\n");
-
-//     return 0;
-// }
-
+#include<iostream>
 #include<string>
+
+using namespace std;
 
 int main()
 {
-    std::string s = std::getline();
+    bool isRight = true;
+    string s;
+    getline(cin, s);
+    for (int i = 0; i < s.length(); ++i)
+    {
+        if (i % 2 == 0 && s[i] >= 'a' && s[i] <= 'z' || i % 2 == 1 && s[i] >= 'A' && s[i] <= 'Z') continue;
+        else 
+        {
+            isRight = false;
+            break;
+        }
+    }
+
+    if (isRight) cout << "Yes" << '\n';
+    else cout << "No" << '\n';
 
     return 0;
 }
