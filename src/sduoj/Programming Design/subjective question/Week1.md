@@ -62,3 +62,30 @@ $O(1)$
 #### Question5
 
 说明张三编写的程序不能处理题面下的所有情况。体面提供的样例只是题面有限的情况，张三的程序在题面样例的情况下可以返回正确结果，但对于某些题面中的特殊情况便稍显逊色。这很可能是在一些细节的处理上的不准确造成的，包括但不限于输入输出的范围，题面的解决方法，程序的逻辑与复杂度等，重新思考一下这些细节，可能对完成题目有所帮助。
+
+------
+
+#### Question6
+
+```c++
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+    ifstream ifile("/P1000.in");
+    ofstream ofile("/P1000.txt");
+    
+    cin.rdbuf(ifile.rdbuf());
+    
+    // my code
+    
+    cout.rdbuf(ofile.rdbuf());
+    
+    ifile.close();
+    ofile.close();
+    return 0;
+}
+```
