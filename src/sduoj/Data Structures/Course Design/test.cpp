@@ -98,7 +98,7 @@ ostream &operator<<(ostream &os, const Infint &infint)
 {
     os << infint.value.back(); // 输出最高位
     for (int i = infint.value.size() - 2; i >= 0; --i) {
-        os << setw(Infint::WIDTH) << setfill('0') << infint.value[i]; // 输出其他位，补零
+        os << infint.value[i]; // 输出其他位，补零
     }
     return os;
 }
