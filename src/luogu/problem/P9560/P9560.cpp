@@ -1,3 +1,8 @@
+/**
+ * AC不了...
+ * 先换道题吧
+ */
+
 #include<bits/stdc++.h>
 
 using namespace std;
@@ -29,20 +34,10 @@ int main()
         {
             if (i * b >= minPrice) break;
 
-            if (n % m == 0)
-            {
-                if(i * b < minPrice)
-                {
-                    minPrice = i * b;
-                    break;
-                }
-                else break;
-            }
-
             int j = 0;
-            ll l, r;
+            __int128 l, r;
             l = r = n;
-            while(l / m == r / m && l % m)
+            while((l / m == r / m) && l % m)
             {
                 l *= k;
                 r = r * k + k - 1;
@@ -56,7 +51,7 @@ int main()
             }
         }
 
-        if(i * b < minPrice) minPrice = i * b;
+        if(n == 0 && i * b < minPrice) minPrice = i * b;
 
         cout << minPrice << '\n';
     }
