@@ -7,7 +7,8 @@ enum Cmd
     END,
     BEGIN,
     LOOP,
-    OP
+    OP,
+    CMB
 };
 
 struct Poly
@@ -78,7 +79,7 @@ int main()
     ios::sync_with_stdio(0);
     cin.tie(nullptr);
 
-    Poly p, q;
+    Poly p;
     bool isFirst = true;
 
     do
@@ -94,6 +95,7 @@ int main()
             while(!stk.empty())
             {
                 Ele tmp = stk.top();
+                stk.pop();
                 if(tmp.command == Cmd::OP)
                     p.coef[0] += tmp.number;
                 else if(tmp.command == Cmd::LOOP)
@@ -101,14 +103,19 @@ int main()
                     if(tmp.number == -1) p << 1;
                     else p *= tmp.number;
                 }
-                
-                stk.pop();
-                if(!stk.empty() && stk.top().command == Cmd::BEGIN)
+                else if(tmp.command == Cmd::CMB)
+                {
+                    p += ans.top();
+                    ans.pop();
+                }
+                 
+                if(tmp.command == Cmd::BEGIN || tmp.command == Cmd::LOOP)
                 {
                     ans.push(Poly(p));
                     p.clear();
+                    if(tmp.command == Cmd::LOOP) stk.push(Ele(0, Cmd::CMB));
+                    break;
                 }
-                if(tmp.command == Cmd::LOOP) break;
             }
             break;
 
@@ -131,12 +138,7 @@ int main()
         }
     } while(!stk.empty());
 
-    while(!ans.empty())
-    {
-        q += ans.top();
-        ans.pop();
-    }
-
+    Poly q = ans.top();
     cout << "Runtime = ";
 
     for(int i = 10; i > 0; -- i)
@@ -145,13 +147,15 @@ int main()
         {
             if(!isFirst) cout << '+';
             isFirst = false;
-            cout << "n^" << i;
+            if(i != 1) cout << "n^" << i;
+            else cout << "n";
         }
         else if(q.coef[i] != 0)
         {
             if(!isFirst) cout << '+';
             isFirst = false;
-            cout << q.coef[i] << "*n^" << i;
+            if(i != 1) cout << q.coef[i] << "*n^" << i;
+            else cout << q.coef[i] << "*n";
         }
     }
 
