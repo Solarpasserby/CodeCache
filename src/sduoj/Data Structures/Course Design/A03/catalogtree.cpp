@@ -6,8 +6,12 @@
 #include <set>
 #include <map>
 
-#define DIRMANAGER
+// #define DIRMANAGER
 
+/**
+ * 这里粘贴文件夹的操作没做好
+ * 有空再改吧...
+ */
 struct Directory
 {
     std::map<std::string, Directory *> subDir;
