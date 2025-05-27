@@ -138,7 +138,7 @@ struct FileIO
     void writeData(std::ios_base::seekdir seekdir, int &offset, std::vector<int> &v)
     {
         file->seekp(offset, seekdir);
-        for(auto a: v) file->write(reinterpret_cast<const char*>(&a), sizeof(int));;
+        for(auto a: v) file->write(reinterpret_cast<const char*>(&a), sizeof(int));
         offset +=  sizeof(int) * v.size();
         v.clear();
         ++accessCnt;
